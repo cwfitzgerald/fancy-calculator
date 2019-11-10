@@ -1,2 +1,9 @@
+.idea/
 build*/
-calc-ui/*.user
+
+#Added by cargo
+#
+#already existing elements are commented out
+
+/target
+**/*.rs.bk

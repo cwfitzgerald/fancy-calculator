@@ -30,7 +30,6 @@ Item {
                 cursorVisible: true
                 horizontalAlignment: Text.AlignRight
                 font.pixelSize: 40
-
             }
         }
 
@@ -73,6 +72,7 @@ Item {
                 id: button_clear
                 text: qsTr("C")
                 grid: parent
+                writeToScreen: false
             }
 
             CalcButton {
@@ -167,14 +167,19 @@ Item {
                 id: button_equals
                 text: qsTr("=")
                 grid: parent
+                writeToScreen: false
             }
         }
+    }
+
+    Connections {
+        target: screen_text
+        onTextChanged: backend.updatedTextField(screen_text.text)
     }
 }
 
 /*##^##
 Designer {
-    D{i:0;autoSize:true;height:480;width:640}D{i:2;anchors_width:200}
+    D{i:0;autoSize:true;height:480;width:640}
 }
 ##^##*/
-

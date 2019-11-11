@@ -47,7 +47,7 @@ fn main() {
         let callbacks = Callbacks {
             init: Some(init),
             updatedTextField: Some(updated_text_field),
-            solve: None,
+            solve: Some(solve),
             deleteData: Some(delete_data),
             data: Box::into_raw(Box::new(sender)) as *mut c_void
         };
@@ -70,7 +70,12 @@ fn main() {
             },
             Data::Solve => {
                 match math::math(&internal_text) {
-                    Ok((_, v)) => unsafe {calc_ui::setAnswer(backend, internal_text.as_mut_ptr() as *mut c_char)},
+                    Ok((_, v)) => {
+                        let answer = format!("{}", v);
+                        let answer_cstr = CString::new(answer).unwrap();
+                        println!("{:?}", v);
+                        unsafe {calc_ui::setAnswer(backend, answer_cstr.as_ptr() as *mut c_char)}
+                    },
                     _ => {}
                 }
             }

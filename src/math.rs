@@ -17,10 +17,11 @@ fn add_sub(input: &str) -> IResult<&str, f64> {
         match delim {
             '+' => acc + val,
             '-' => acc - val,
+            '−' => acc - val,
             _ => unreachable!(),
         }
     };
-    let (input, sum) = fold_many0(tuple((one_of("+-"), mult_div)), lhs, folder)(input)?;
+    let (input, sum) = fold_many0(tuple((one_of("+-−"), mult_div)), lhs, folder)(input)?;
 
     Ok((input, sum))
 }
@@ -28,17 +29,16 @@ fn add_sub(input: &str) -> IResult<&str, f64> {
 fn mult_div(input: &str) -> IResult<&str, f64> {
     let (input, lhs) = number(input)?;
     let folder = |acc, (delim, val)| {
-        dbg!(acc, delim, val);
         match delim {
             '*' => acc * val,
             'x' => acc * val,
+            '×' => acc * val,
             '/' => acc / val,
+            '÷' => acc / val,
             _ => unreachable!(),
         }
     };
-    let (input, sum) = fold_many0(tuple((one_of("*x/"), number)), lhs, folder)(input)?;
-    dbg!(sum);
-
+    let (input, sum) = fold_many0(tuple((one_of("*x×/÷"), number)), lhs, folder)(input)?;
 
     Ok((input, sum))
 }
@@ -59,8 +59,9 @@ mod test {
 
     #[test]
     fn simple_maths() {
-//        assert_eq!(math("1 + 2 + 3 + 4"), Ok(("", 10.0)));
-//        assert_eq!(math("1 + 2 - 3 * 4 / 5"), Ok(("", 0.6)));
+        assert_eq!(math("1 + 2 + 3 + 4"), Ok(("", 10.0)));
+        assert_eq!(math("1 + 2 - 3 * 4 / 5"), Ok(("", 0.6)));
         assert_eq!(math("1 / 2 * 3 - 4 + 5"), Ok(("", 2.5)));
+        assert_eq!(math("8 - 3"), Ok(("", 5.0)));
     }
 }

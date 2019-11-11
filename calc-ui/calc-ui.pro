@@ -38,5 +38,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    CalcButton.qml \
-    CalculatorForm.qml
+    CalcButton.qml

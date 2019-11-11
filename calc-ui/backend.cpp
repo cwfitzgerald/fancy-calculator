@@ -23,6 +23,11 @@ void Backend::updatedTextField(QString str)
     _callbacks.updatedTextField(_callbacks.data, str.toUtf8().data());
 }
 
+void Backend::solve()
+{
+    _callbacks.solve(_callbacks.data);
+}
+
 Callbacks Backend::emptyCallbacks()
 {
     return Callbacks {

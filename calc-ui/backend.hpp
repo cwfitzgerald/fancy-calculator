@@ -17,6 +17,7 @@ signals:
 
 public slots:
     void updatedTextField(QString str);
+    void solve();
 
 private:
     Callbacks _callbacks;

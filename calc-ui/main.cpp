@@ -38,3 +38,8 @@ extern "C" int runGui(Callbacks callbacks) {
 void setAnswer(Backend *internal, char *value) {
     emit internal->answered(QString(value));
 }
+
+void invalidInput(Backend *internal, char *fixed)
+{
+    emit internal->invalidInput(QString(fixed));
+}

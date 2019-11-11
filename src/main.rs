@@ -66,7 +66,12 @@ fn main() {
             },
             Data::UpdatedText { text } => {
                 println!("Whoop! Now the text is {}!", text);
-                internal_text = text;
+                let filtered: String = text.chars().filter(|x| "0123456789.+-−*x×/÷".find(*x).is_some()).collect();
+                if filtered != text {
+                    let answer_cstr = CString::new(filtered.clone()).unwrap();
+                    unsafe{calc_ui::invalidInput(backend, answer_cstr.as_ptr() as *mut c_char)};
+                }
+                internal_text = filtered;
             },
             Data::Solve => {
                 match math::math(&internal_text) {
@@ -81,4 +86,6 @@ fn main() {
             }
         }
     }
+
+    handle.join().unwrap();
 }

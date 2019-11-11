@@ -14,6 +14,7 @@ public:
 
 signals:
     void answered(QString str);
+    void invalidInput(QString fixed);
 
 public slots:
     void updatedTextField(QString str);

@@ -87,3 +87,6 @@ extern "C" {
 extern "C" {
     pub fn setAnswer(internal: *mut Backend, value: *mut ::std::os::raw::c_char);
 }
+extern "C" {
+    pub fn invalidInput(internal: *mut Backend, fixed: *mut ::std::os::raw::c_char);
+}

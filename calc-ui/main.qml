@@ -13,6 +13,7 @@ Window {
         id: backend
 
         onAnswered: screen_text.text = str
+        onInvalidInput: screen_text.text = fixed
     }
 
     Item {

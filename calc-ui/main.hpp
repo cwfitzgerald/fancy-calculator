@@ -12,4 +12,5 @@ extern "C" {
     };
 
     int runGui(Callbacks callbacks);
+    void setAnswer(Backend* internal, char* value);
 }

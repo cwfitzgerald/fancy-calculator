@@ -14,9 +14,7 @@ pub struct Callbacks {
     pub updatedTextField: ::std::option::Option<
         unsafe extern "C" fn(data: *mut ::std::os::raw::c_void, text: *mut ::std::os::raw::c_char),
     >,
-    pub solve: ::std::option::Option<
-        unsafe extern "C" fn(data: *mut ::std::os::raw::c_void) -> *mut ::std::os::raw::c_char,
-    >,
+    pub solve: ::std::option::Option<unsafe extern "C" fn(data: *mut ::std::os::raw::c_void)>,
     pub deleteData: ::std::option::Option<unsafe extern "C" fn(data: *mut ::std::os::raw::c_void)>,
     pub data: *mut ::std::os::raw::c_void,
 }
@@ -85,4 +83,7 @@ fn bindgen_test_layout_Callbacks() {
 }
 extern "C" {
     pub fn runGui(callbacks: Callbacks) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn setAnswer(internal: *mut Backend, value: *mut ::std::os::raw::c_char);
 }

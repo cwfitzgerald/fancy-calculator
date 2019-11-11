@@ -6,7 +6,7 @@ use nom::bytes::complete::{take_while1, is_a};
 use nom::character::complete::{multispace0, one_of};
 use nom::combinator::all_consuming;
 
-fn math(input: &str) -> IResult<&str, f64> {
+pub fn math(input: &str) -> IResult<&str, f64> {
     let (input, result) = add_sub(input)?;
     Ok((input, (result * 100_000.).round() / 100_000.))
 }

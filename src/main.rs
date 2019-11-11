@@ -1,6 +1,7 @@
 use std::ffi::{c_void, CString, CStr};
 use crate::calc_ui::{Backend, Callbacks, runGui};
 use std::os::raw::c_char;
+use std::ptr::{null, null_mut};
 
 mod calc_ui;
 mod math;
@@ -9,6 +10,7 @@ mod math;
 enum Data {
     Init{internal: *mut Backend},
     UpdatedText{text: String},
+    Solve,
 }
 
 unsafe impl Send for Data {}
@@ -29,6 +31,12 @@ extern "C" fn updated_text_field(data: *mut c_void, string: *mut c_char) {
     sender.send(Data::UpdatedText { text: unsafe{ CStr::from_ptr(string) }.to_string_lossy().into_owned() });
 }
 
+extern "C" fn solve(data: *mut c_void) {
+    let sender = unsafe { get_sender(data) };
+
+    sender.send(Data::Solve);
+}
+
 extern "C" fn delete_data(data: *mut c_void) {
     let sender = unsafe { Box::from_raw(data as *mut crossbeam::Sender<Data>) };
 }
@@ -47,13 +55,24 @@ fn main() {
         unsafe { runGui(callbacks) };
     });
 
+    let mut internal_text = String::new();
+    let mut backend = null_mut();
+
     while let Ok(data) = receiver.recv() {
         match data {
-            d @ Data::Init{..} =>  {
-                println!("{:?}", d);
+            Data::Init{internal} =>  {
+                println!("{:?}", internal);
+                backend = internal;
             },
             Data::UpdatedText { text } => {
                 println!("Whoop! Now the text is {}!", text);
+                internal_text = text;
+            },
+            Data::Solve => {
+                match math::math(&internal_text) {
+                    Ok((_, v)) => unsafe {calc_ui::setAnswer(backend, internal_text.as_mut_ptr() as *mut c_char)},
+                    _ => {}
+                }
             }
         }
     }

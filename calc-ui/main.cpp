@@ -1,6 +1,9 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QVariant>
+#include <QQuickItem>
+#include <iostream>
 #include "backend.hpp"
 #include "main.hpp"
 
@@ -10,6 +13,8 @@ extern "C" int runGui(Callbacks callbacks) {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, nullptr);
+
+    qmlRegisterType<Backend>("calc.ui.backend", 1, 0, "Backend");
 
     QQmlApplicationEngine engine;
 
@@ -21,9 +26,15 @@ extern "C" int runGui(Callbacks callbacks) {
     }, Qt::QueuedConnection);
     engine.load(url);
 
-    Backend backend(&app, callbacks);
+    auto backend_ptr = engine.rootObjects().at(0)->children().at(0)->children().at(0);
 
-    engine.rootContext()->setContextProperty("backend", &backend);
+    auto backend = qobject_cast<Backend*>(backend_ptr);
+
+    backend->setCallbacks(callbacks);
 
     return app.exec();
+}
+
+void setAnswer(Backend *internal, char *value) {
+    emit internal->answered(QString(value));
 }

@@ -46,6 +46,9 @@ Window {
                     cursorVisible: true
                     horizontalAlignment: Text.AlignRight
                     font.pixelSize: 40
+                    focus: true
+
+                    onEditingFinished: backend.solve()
                 }
             }
 
@@ -89,6 +92,7 @@ Window {
                     text: qsTr("C")
                     grid: parent
                     writeToScreen: false
+                    onClicked: screen_text.text = ""
                 }
 
                 CalcButton {

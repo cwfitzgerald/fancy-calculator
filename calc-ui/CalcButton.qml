@@ -10,6 +10,8 @@ Button {
     height: grid.height / grid.rows
     font.pixelSize: Math.min(height, width) / 2
 
+    focusPolicy: Qt.NoFocus
+
     onPressed: {
         if (writeToScreen) {
             screen_text.text += text

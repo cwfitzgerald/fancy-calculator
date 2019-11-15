@@ -4,7 +4,7 @@ use nom::branch::alt;
 use nom::sequence::tuple;
 use nom::bytes::complete::{take_while1, is_a};
 use nom::character::complete::{multispace0, one_of};
-use nom::combinator::all_consuming;
+use nom::combinator::{all_consuming, opt};
 
 pub fn math(input: &str) -> IResult<&str, f64> {
     let (input, result) = all_consuming(add_sub)(input)?;
@@ -45,10 +45,17 @@ fn mult_div(input: &str) -> IResult<&str, f64> {
 
 fn number(input: &str) -> IResult<&str, f64> {
     let (input, _) = multispace0(input)?;
+    let (input, negation) = opt(one_of("+-−"))(input)?;
+    let (input, _) = multispace0(input)?;
     let (input, value) = take_while1(|c| "0123456789.".contains(c))(input)?;
     let (input, _) = multispace0(input)?;
 
     let float: f64 = value.parse().unwrap();
+
+    let float: f64 = match negation {
+        Some('-') | Some('−') => -float,
+        _ => float,
+    };
 
     Ok((input, float))
 }
@@ -63,5 +70,7 @@ mod test {
         assert_eq!(math("1 + 2 - 3 * 4 / 5"), Ok(("", 0.6)));
         assert_eq!(math("1 / 2 * 3 - 4 + 5"), Ok(("", 2.5)));
         assert_eq!(math("8 - 3"), Ok(("", 5.0)));
+        assert_eq!(math("-3"), Ok(("", -3.0)));
+        assert_eq!(math("-3 * -2"), Ok(("", 6.0)));
     }
 }
